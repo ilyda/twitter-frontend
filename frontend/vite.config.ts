@@ -10,6 +10,10 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
   ],
+  build: {
+    // 🌟 Küçük varlıkların (assets) base64 olarak inline edilmesini kapatır
+    assetsInlineLimit: 0, 
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
