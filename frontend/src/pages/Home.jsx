@@ -1,115 +1,104 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import TrendyolReviews from "../components/TrendyolReviews";
 import { products } from "../data/products";
 
 const Home = () => {
-  const featuredProducts = products.slice(0, 4);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Tümü");
+
+  const categories = ["Tümü", ...new Set(products.map((p) => p.category))];
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === "Tümü" || product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <>
+      {/* Hero Banner Bölümü */}
       <section className="px-4 py-8 sm:px-6 lg:px-8 lg:py-16">
-        <div className="mx-auto grid min-h-[580px] w-full max-w-7xl overflow-hidden rounded-[2rem] bg-[#e8e5dc] lg:grid-cols-2">
+        <div className="mx-auto grid min-h-[500px] w-full max-w-7xl overflow-hidden rounded-[2rem] bg-[#f5c7e1] lg:grid-cols-2">
           <div className="flex flex-col items-start justify-center px-7 py-14 sm:px-12 lg:px-16">
             <span className="mb-4 text-xs font-black tracking-[0.2em] text-muted">
-              SADE TASARIMLAR
+              LilyCo TASARIMLAR
             </span>
-
             <h1 className="max-w-xl text-5xl font-black leading-[1.05] tracking-[-0.05em] sm:text-6xl lg:text-7xl">
               Yaşam alanınıza özel ürünler
             </h1>
-
-            <p className="mt-6 max-w-lg text-base leading-8 text-muted sm:text-lg">
-              Dekoratif, modern ve özenle hazırlanmış ürünleri
-              keşfedin.
-            </p>
-
-            <Link
-              to="/urunler"
-              className="mt-8 inline-flex min-h-12 items-center justify-center rounded-full bg-primary px-7 font-bold text-white transition hover:-translate-y-0.5 hover:bg-primary-hover"
-            >
-              Ürünleri İncele
-            </Link>
           </div>
-
-          <div className="min-h-[350px] lg:min-h-[580px]">
+          <div className="min-h-[300px] lg:min-h-[500px]">
             <img
-              src="/images/hero.jpg"
+              src="https://media.eczaneden.com/files/containers/cildinizeihtiyaciolannemiverin@3x-36.jpg"
               alt="Dekoratif ürünler"
               className="h-full w-full object-cover"
+              loading="lazy" // Tarayıcı sadece ekrana yaklaştığında yükler
+              decoding="async" // Görsel çözümlemesini asenkron yaparak ana iş parçacığını (thread) rahatlatır
             />
           </div>
         </div>
       </section>
 
-      <section className="py-16 lg:py-20">
+      {/* TÜM ÜRÜNLER VE FİLTRELEME ALANI */}
+      <section className="py-12 lg:py-16 bg-page/30">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-end">
+          
+          {/* Başlık, Arama ve Filtre Paneli */}
+          <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between pb-8">
             <div>
-              <span className="text-xs font-black tracking-[0.2em] text-muted">
-                ÖNE ÇIKANLAR
-              </span>
-
-              <h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-                Popüler ürünler
-              </h2>
+              <span className="text-xs font-black tracking-[0.2em] text-muted">KOLEKSİYON</span>
+              <h2 className="mt-2 text-4xl font-black tracking-tight">Tüm Ürünlerimiz</h2>
             </div>
 
-            <Link
-              to="/urunler"
-              className="border-b border-primary pb-1 font-bold"
-            >
-              Tüm ürünler
-            </Link>
+            {/* Dinamik Arama Kutusu */}
+            <div className="w-full max-w-xs">
+              <input
+                type="text"
+                placeholder="Ürün ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)} // 🌟 Hata Düzeltildi: e.value -> e.target.value
+                className="w-full h-11 px-4 rounded-full bg-white text-sm font-medium outline-none focus:border-primary transition border border-gray-100 shadow-sm"
+              />
+            </div>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          {/* Kategori Butonları */}
+          <div className="mb-10 flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
+                className={`px-5 py-2 rounded-full text-xs font-bold transition ${
+                  selectedCategory === category
+                    ? "bg-primary bg-[#6ea4ae] text-white"
+                    : "bg-white text-black hover:bg-gray-100 border border-gray-100"
+                }`}
+              >
+                {category}
+              </button>
             ))}
           </div>
+
+          {/* Ürün Kartları Grid Yapısı */}
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 text-center text-muted font-medium">
+              Aradığınız kriterlere uygun ürün bulunamadı.
+            </div>
+          )}
+
         </div>
       </section>
 
-      <section className="pb-16 lg:pb-20">
-        <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
-          <div className="rounded-3xl border border-line bg-white p-8">
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-page text-xl">
-              ✦
-            </div>
-
-            <h3 className="text-xl font-bold">Özel Tasarım</h3>
-
-            <p className="mt-3 leading-7 text-muted">
-              Her yaşam alanına uyum sağlayan sade ve modern ürünler.
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-line bg-white p-8">
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-page text-xl">
-              ⬡
-            </div>
-
-            <h3 className="text-xl font-bold">Güvenli Paketleme</h3>
-
-            <p className="mt-3 leading-7 text-muted">
-              Ürünleriniz zarar görmeyecek şekilde özenle paketlenir.
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-line bg-white p-8">
-            <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-page text-xl">
-              ✓
-            </div>
-
-            <h3 className="text-xl font-bold">Kolay Sipariş</h3>
-
-            <p className="mt-3 leading-7 text-muted">
-              Sepetinizi oluşturup WhatsApp üzerinden sipariş
-              verebilirsiniz.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* TRENDYOL DEĞERLENDİRMELERİ BÖLÜMÜ */}
+      <TrendyolReviews />
     </>
   );
 };

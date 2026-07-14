@@ -2,14 +2,14 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="mt-20 border-t border-line bg-white">
+    <footer className="mt-20 border-t border-[#e5e5e5] bg-white">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div>
           <Link
             to="/"
             className="text-2xl font-black tracking-[0.35em]"
           >
-            SADE
+            LilyCo
           </Link>
 
           <p className="mt-4 max-w-sm text-sm leading-7 text-muted">
@@ -39,23 +39,21 @@ const Footer = () => {
           <h3 className="font-bold">İletişim</h3>
 
           <div className="mt-4 flex flex-col gap-3 text-sm text-muted">
-            <a href="tel:+905555555555" className="hover:text-primary">
-              0555 555 55 55
-            </a>
+        
 
             <a
-              href="mailto:info@sade.com"
+              href="mailto:info@lilycompany.com"
               className="hover:text-primary"
             >
-              info@sade.com
+              info@lilycompany.com
             </a>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-line">
+      <div className="border-t border-[#e5e5e5]">
         <div className="mx-auto w-full max-w-7xl px-4 py-5 text-sm text-muted sm:px-6 lg:px-8">
-          © {new Date().getFullYear()} SADE. Tüm hakları saklıdır.
+          © {new Date().getFullYear()} LilyCo. Tüm hakları saklıdır.
         </div>
       </div>
     </footer>

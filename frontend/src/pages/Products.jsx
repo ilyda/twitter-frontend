@@ -1,18 +1,33 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import { products } from "../data/products";
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [searchText, setSearchText] = useState("");
+  // 🌟 Performans için: Kullanıcının yazdığı anlık değer ile filtrelenen değeri ayırdık (Debounce)
+  const [debouncedSearchText, setDebouncedSearchText] = useState("");
 
-  const categories = [
-    "Tümü",
-    ...new Set(products.map((product) => product.category)),
-  ];
+  // Yazma işlemi bittikten 250ms sonra filtrelemeyi tetikler
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchText(searchText);
+    }, 250);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchText]);
+
+  const categories = useMemo(() => {
+    return [
+      "Tümü",
+      ...new Set(products.map((product) => product.category)),
+    ];
+  }, []); // Kategorileri gereksiz yere her renderda baştan hesaplamasın
 
   const filteredProducts = useMemo(() => {
-    const normalizedSearch = searchText
+    const normalizedSearch = debouncedSearchText
       .trim()
       .toLocaleLowerCase("tr-TR");
 
@@ -29,7 +44,7 @@ const Products = () => {
 
       return categoryMatch && searchMatch;
     });
-  }, [selectedCategory, searchText]);
+  }, [selectedCategory, debouncedSearchText]);
 
   return (
     <section className="py-16 lg:py-24">
@@ -44,7 +59,7 @@ const Products = () => {
           </h1>
 
           <p className="mt-4 text-lg leading-8 text-muted">
-            Sade ve özel tasarım ürünlerimizi keşfedin.
+            LilyCo ve özel tasarım ürünlerimizi keşfedin.
           </p>
         </div>
 
@@ -56,7 +71,7 @@ const Products = () => {
                 type="button"
                 className={`min-h-11 rounded-full border px-5 text-sm font-semibold transition ${
                   selectedCategory === category
-                    ? "border-primary bg-primary text-white"
+                    ? "border-primary bg-primary text-[#f06fb9]"
                     : "border-line bg-transparent text-muted hover:border-primary hover:text-primary"
                 }`}
                 onClick={() => setSelectedCategory(category)}
@@ -76,7 +91,8 @@ const Products = () => {
         </div>
 
         {filteredProducts.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          // 🌟 grid elemanlarına "will-change" ve GPU hızlandırma sınıfları ekleyerek renderı hızlandırdık
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 transform-gpu">
             {filteredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

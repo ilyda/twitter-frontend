@@ -3,3 +3,45 @@
 
 
 
+body {
+  background-color: #f9f9f9;
+}
+/* Popup içindeki Swiper oklarını beyaza boyar */
+.popup-swiper .swiper-button-next,
+.popup-swiper .swiper-button-prev {
+  color: #ffffff !important; /* Ok işaretlerini beyaz yapar */
+  transition: opacity 0.2s ease;
+}
+
+.popup-swiper .swiper-button-next:hover,
+.popup-swiper .swiper-button-prev:hover {
+  opacity: 0.7;
+}
+
+/* Sayfa arkasında kaydırma çubuğunun taşmasını önlemek için opsiyonel */
+.cursor-zoom-in {
+  cursor: zoom-in;
+}
+/* Swiper noktalarını yatay beyaz çizgilere dönüştürür */
+.card-mini-swiper .swiper-pagination-dots {
+  bottom: 12px !important;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+.card-mini-swiper .swiper-pagination-bullet {
+  width: 24px !important;      /* Genişlik verilerek çizgi formu oluşturuldu */
+  height: 3px !important;      /* Çubuğun ince durması için yükseklik azaldı */
+  background: #ffffff !important;
+  opacity: 0.4 !important;     /* Aktif olmayan çubukların soluk görünümü */
+  border-radius: 2px !important;
+  transition: all 0.3s ease;
+}
+
+.card-mini-swiper .swiper-pagination-bullet-active {
+  opacity: 1 !important;       /* Aktif çubuğun parlak beyaz görünümü */
+  width: 32px !important;      /* Aktif olan çubuğun daha belirgin uzaması */
+}
+
